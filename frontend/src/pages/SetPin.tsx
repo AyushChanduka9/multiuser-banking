@@ -5,7 +5,7 @@ import { authApi } from '../services/api';
 import './Login.css';
 
 export default function SetPin() {
-    const { user, updateUser } = useAuth();
+    const { updateUser } = useAuth();
     const navigate = useNavigate();
 
     const [pin, setPin] = useState('');

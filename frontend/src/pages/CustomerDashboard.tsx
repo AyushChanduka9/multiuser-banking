@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { customerApi } from '../services/api';
@@ -28,7 +27,6 @@ interface Transaction {
 export default function CustomerDashboard() {
     const { user, logout } = useAuth();
     const { socket, isConnected } = useSocket();
-    const navigate = useNavigate();
 
     const [account, setAccount] = useState<Account | null>(null);
     const [transactions, setTransactions] = useState<Transaction[]>([]);

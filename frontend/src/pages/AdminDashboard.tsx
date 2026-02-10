@@ -43,11 +43,11 @@ interface PendingTransaction {
 }
 
 export default function AdminDashboard() {
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
     const { socket, isConnected } = useSocket();
 
     const [accounts, setAccounts] = useState<Account[]>([]);
-    const [queueStats, setQueueStats] = useState<{ queueSize: number; topItems: QueueItem[] }>({ queueSize: 0, topItems: [] });
+    const [, setQueueStats] = useState<{ queueSize: number; topItems: QueueItem[] }>({ queueSize: 0, topItems: [] });
     const [lockedItems, setLockedItems] = useState<LockedItem[]>([]);
     const [pending, setPending] = useState<PendingTransaction[]>([]);
     const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
         initialDeposit: 1000,
     });
     const [otpSent, setOtpSent] = useState(false);
-    const [otpData, setOtpData] = useState({ mobile: '', email: '' });
+    const [, setOtpData] = useState({ mobile: '', email: '' });
     const [mobileOtp, setMobileOtp] = useState('');
     const [emailOtp, setEmailOtp] = useState('');
     const [mobileVerified, setMobileVerified] = useState(false);
