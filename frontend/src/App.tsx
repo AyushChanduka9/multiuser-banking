@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 
 import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
 import SetPin from './pages/SetPin';
 import CustomerDashboard from './pages/CustomerDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -20,7 +21,7 @@ function ProtectedRoute({
   const { isAuthenticated, isAdmin, isFirstLogin } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (requireAdmin && !isAdmin) {
@@ -43,7 +44,7 @@ function FirstTimeRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isFirstLogin, isAdmin } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (isAdmin) {
@@ -62,8 +63,10 @@ function AppRoutes() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
+
       <Route
-        path="/"
+        path="/login"
         element={
           isAuthenticated
             ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} replace />
