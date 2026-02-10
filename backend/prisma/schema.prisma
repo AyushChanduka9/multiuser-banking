@@ -1,0 +1,147 @@
+// Prisma schema for Multi-User Banking System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum Tier {
+  BASIC
+  PREMIUM
+  VIP
+}
+
+enum Urgency {
+  NORMAL
+  EMI
+  MEDICAL
+}
+
+enum TxStatus {
+  CREATED
+  LOCKED        // In time-lock heap
+  QUEUED        // In priority queue
+  RESERVED      // Funds reserved, awaiting completion
+  PENDING_MANUAL // Unlocked, awaiting admin action
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum LedgerType {
+  DEBIT
+  CREDIT
+  RESERVE
+  RELEASE
+}
+
+enum OtpType {
+  SMS
+  EMAIL
+}
+
+// Models
+model Account {
+  id              String   @id @default(uuid())
+  accountNumber   String   @unique  // 12-digit generated
+  aadhaar         String   @unique  // 12-digit
+  pan             String   @unique  // XXXXX0000X format
+  mobile          String   @unique
+  email           String   @unique
+  fullName        String   @default("") // Account holder name
+  pinHash         String?            // null until first-time set
+  balance         Decimal  @default(1000) @db.Decimal(15, 2)
+  reservedAmount  Decimal  @default(0) @db.Decimal(15, 2)
+  tier            Tier     @default(BASIC)
+  riskScore       Int      @default(0)  // 0-10
+  role            Role     @default(CUSTOMER)
+  isFirstLogin    Boolean  @default(true)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  sentTransactions     Transaction[] @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
+  ledgerEntries        LedgerEntry[]
+
+  @@index([accountNumber])
+  @@index([mobile])
+  @@index([email])
+}
+
+model Transaction {
+  id              String    @id @default(uuid())
+  fromAccountId   String
+  toAccountId     String
+  amount          Decimal   @db.Decimal(15, 2)
+  urgency         Urgency   @default(NORMAL)
+  status          TxStatus  @default(CREATED)
+  basePriority    Float
+  effectivePriority Float?
+  
+  // Time-lock fields
+  lockedUntil     DateTime?
+  
+  // Processing fields
+  reservedAt      DateTime?
+  completedAt     DateTime?
+  failureReason   String?
+  processingAttempts Int    @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  fromAccount     Account   @relation("SentTransactions", fields: [fromAccountId], references: [id])
+  toAccount       Account   @relation("ReceivedTransactions", fields: [toAccountId], references: [id])
+  ledgerEntries   LedgerEntry[]
+
+  @@index([status])
+  @@index([fromAccountId])
+  @@index([toAccountId])
+  @@index([createdAt])
+}
+
+model LedgerEntry {
+  id              String     @id @default(uuid())
+  accountId       String
+  transactionId   String
+  type            LedgerType
+  amount          Decimal    @db.Decimal(15, 2)
+  balanceAfter    Decimal    @db.Decimal(15, 2)
+  description     String?
+  createdAt       DateTime   @default(now())
+
+  // Relations
+  account         Account     @relation(fields: [accountId], references: [id])
+  transaction     Transaction @relation(fields: [transactionId], references: [id])
+
+  @@index([accountId])
+  @@index([transactionId])
+}
+
+model Otp {
+  id              String   @id @default(uuid())
+  identifier      String   // mobile or email
+  code            String
+  type            OtpType
+  purpose         String   @default("VERIFICATION") // VERIFICATION, PIN_RESET, etc.
+  expiresAt       DateTime
+  verified        Boolean  @default(false)
+  attempts        Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([identifier, type])
+  @@index([expiresAt])
+}
