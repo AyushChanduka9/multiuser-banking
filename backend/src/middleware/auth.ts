@@ -77,6 +77,6 @@ export function customerOnly(req: Request, res: Response, next: NextFunction): v
  */
 export function generateToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string {
     return jwt.sign(payload, config.jwtSecret, {
-        expiresIn: config.jwtExpiry
-    });
+        expiresIn: config.jwtExpiry as string | number
+    } as jwt.SignOptions);
 }
