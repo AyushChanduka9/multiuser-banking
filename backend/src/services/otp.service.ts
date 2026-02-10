@@ -12,12 +12,15 @@ const twilioClient = twilio(config.twilio.accountSid, config.twilio.authToken);
 // Initialize Nodemailer with Gmail SMTP
 const emailTransporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // use SSL
+    port: 587,
+    secure: false, // use STARTTLS
+    requireTLS: true,
     auth: {
         user: config.gmail.user,
         pass: config.gmail.appPassword,
     },
+    logger: true, // log to console
+    debug: true, // include SMTP traffic in logs
 });
 
 export const otpService = {
