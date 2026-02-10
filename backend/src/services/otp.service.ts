@@ -48,9 +48,12 @@ export const otpService = {
             return { success: true };
         } catch (error: any) {
             console.error(`❌ Failed to send SMS to ${mobile}:`, error.message);
-            // DEMO MODE: Always return success so the UI continues
-            console.log(`📱 [DEMO] OTP for ${mobile}: ${code}`);
-            return { success: true, code };
+            // Return code in dev mode for testing even if SMS fails
+            if (config.nodeEnv === 'development') {
+                console.log(`📱 [DEV] SMS OTP for ${mobile}: ${code}`);
+                return { success: true, code };
+            }
+            throw new Error(`SMS Failed: ${error.message}`);
         }
     },
 
@@ -101,9 +104,12 @@ export const otpService = {
             return { success: true };
         } catch (error: any) {
             console.error(`❌ Failed to send email to ${email}:`, error.message);
-            // DEMO MODE: Always return success so the UI continues
-            console.log(`📧 [DEMO] OTP for ${email}: ${code}`);
-            return { success: true, code };
+            // Return code in dev mode for testing even if email fails
+            if (config.nodeEnv === 'development') {
+                console.log(`📧 [DEV] Email OTP for ${email}: ${code}`);
+                return { success: true, code };
+            }
+            throw new Error(`Email Failed: ${error.message}`);
         }
     },
 
@@ -115,24 +121,6 @@ export const otpService = {
         code: string,
         type: OtpType
     ): Promise<{ valid: boolean; error?: string }> {
-        // DEMO MODE: Master OTP
-        if (code === '123456') {
-            // Find any latest unverified OTP to mark as verified, 
-            // even if we skip the check, we should mark it used if it exists
-            const otp = await prisma.otp.findFirst({
-                where: { identifier, type, verified: false },
-                orderBy: { createdAt: 'desc' },
-            });
-
-            if (otp) {
-                await prisma.otp.update({
-                    where: { id: otp.id },
-                    data: { verified: true },
-                });
-            }
-            return { valid: true };
-        }
-
         const otp = await prisma.otp.findFirst({
             where: {
                 identifier,
