@@ -63,7 +63,7 @@ export const adminApi = {
         aadhaar: string;
         pan: string;
         mobile: string;
-        email: string;
+        email?: string;
         tier?: string;
     }) => api.post('/admin/accounts', data),
 

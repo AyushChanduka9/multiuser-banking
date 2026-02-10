@@ -59,7 +59,7 @@ export default function AdminDashboard() {
         aadhaar: '',
         pan: '',
         mobile: '',
-        email: '',
+
         tier: 'BASIC',
         initialDeposit: 1000,
     });
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
         try {
             const response = await adminApi.createAccount(formData);
             setFormSuccess(`Account created! Account Number: ${response.data.account.accountNumber}`);
-            setFormData({ fullName: '', aadhaar: '', pan: '', mobile: '', email: '', tier: 'BASIC', initialDeposit: 1000 });
+            setFormData({ fullName: '', aadhaar: '', pan: '', mobile: '', tier: 'BASIC', initialDeposit: 1000 });
             setOtpSent(false);
             setMobileVerified(false);
             setMobileOtp('');
