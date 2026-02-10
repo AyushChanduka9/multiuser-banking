@@ -11,7 +11,7 @@ export const schemas = {
         aadhaar: z.string().regex(/^\d{12}$/, 'Aadhaar must be 12 digits'),
         pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i, 'Invalid PAN format'),
         mobile: z.string().regex(/^[6-9]\d{9}$/, 'Invalid mobile number'),
-        email: z.string().email('Invalid email'),
+        email: z.string().email('Invalid email').optional(),
         tier: z.enum(['BASIC', 'PREMIUM', 'VIP']).optional().default('BASIC'),
         initialDeposit: z.number().min(1000, 'Minimum deposit is ₹1000').optional().default(1000),
     }),
@@ -51,7 +51,7 @@ export const schemas = {
     // OTP
     sendOtp: z.object({
         mobile: z.string().regex(/^[6-9]\d{9}$/, 'Invalid mobile number'),
-        email: z.string().email('Invalid email'),
+        email: z.string().email('Invalid email').optional(),
     }),
 
     verifyOtp: z.object({

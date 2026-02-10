@@ -21,8 +21,6 @@ const emailTransporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     },
-    // FORCE IPv4 by binding to 0.0.0.0
-    localAddress: '0.0.0.0',
     family: 4,
     logger: true,
     debug: true,
@@ -186,6 +184,17 @@ export const otpService = {
         });
 
         return !!(smsOtp && emailOtp);
+    },
+
+    /**
+     * Check if just Mobile OTP is verified (for cases where Email is optional)
+     */
+    async checkMobileVerification(mobile: string): Promise<boolean> {
+        const smsOtp = await prisma.otp.findFirst({
+            where: { identifier: mobile, type: OtpType.SMS, verified: true },
+            orderBy: { createdAt: 'desc' },
+        });
+        return !!smsOtp;
     },
 
     /**

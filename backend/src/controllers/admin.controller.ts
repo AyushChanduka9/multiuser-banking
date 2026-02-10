@@ -22,7 +22,13 @@ router.post(
     validate(schemas.createAccount),
     async (req: Request, res: Response) => {
         try {
-            const { fullName, aadhaar, pan, mobile, email, tier, initialDeposit } = req.body;
+            const { fullName, aadhaar, pan, mobile, tier, initialDeposit } = req.body;
+            let { email } = req.body;
+
+            // Generate dummy email if not provided (Mobile-only flow)
+            if (!email) {
+                email = `${mobile}@nexus.local`;
+            }
 
             // Check for duplicates
             const duplicate = await accountService.checkDuplicates({ aadhaar, pan, mobile, email });
@@ -31,10 +37,10 @@ router.post(
                 return;
             }
 
-            // Check if OTPs are verified
-            const otpsVerified = await otpService.checkDualVerification(mobile, email);
+            // Check if Mobile OTP is verified (Email skipped)
+            const otpsVerified = await otpService.checkMobileVerification(mobile);
             if (!otpsVerified) {
-                res.status(400).json({ error: 'OTP verification required for both mobile and email' });
+                res.status(400).json({ error: 'Mobile OTP verification required' });
                 return;
             }
 

@@ -9,22 +9,19 @@ const router = Router();
  */
 router.post('/send', validate(schemas.sendOtp), async (req: Request, res: Response) => {
     try {
-        const { mobile, email } = req.body;
+        const { mobile } = req.body;
 
-        // Send both SMS and Email OTPs
-        const [smsResult, emailResult] = await Promise.all([
-            otpService.sendSmsOtp(mobile),
-            otpService.sendEmailOtp(email),
-        ]);
+        // Send ONLY SMS OTP
+        const smsResult = await otpService.sendSmsOtp(mobile);
 
         res.json({
-            message: 'OTP sent to mobile and email',
-            success: smsResult.success && emailResult.success,
+            message: 'OTP sent to mobile',
+            success: smsResult.success,
             // Demo only - shows codes if SMS/Email failed (dev mode fallback)
             demo: {
                 mobile: smsResult.code || '(sent via SMS)',
-                email: emailResult.code || '(sent via Email)',
-                note: 'Real OTPs sent via Twilio SMS and SendGrid Email',
+                email: null,
+                note: 'Real OTPs sent via Twilio SMS',
             },
         });
     } catch (error: any) {
