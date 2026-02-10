@@ -320,8 +320,8 @@ export default function AdminDashboard() {
                                                 )}
                                             </div>
                                         </div>
-                                        </div>
                                     </div>
+
 
                                     <button
                                         type="submit"
@@ -331,138 +331,138 @@ export default function AdminDashboard() {
                                         Create Account
                                     </button>
                                 </div>
-                )}
-            </form>
-        </div>
-    )
-}
+                            )}
+                        </form>
+                    </div>
+                )
+                }
 
-<div className="admin-grid">
-    {/* Queues Section */}
-    <div className="queue-section">
-        {/* Time-Lock Heap */}
-        <div className="queue-card">
-            <h3>
-                ⏱️ Time-Lock Heap
-                <span className="queue-count">{lockedItems.length}</span>
-            </h3>
-            <div className="queue-items">
-                {lockedItems.length === 0 ? (
-                    <div className="empty-state">No locked transactions</div>
-                ) : (
-                    lockedItems.map((item) => (
-                        <div key={item.id} className="queue-item locked">
-                            <div className="queue-item-info">
-                                <span className="queue-item-id">{item.id.slice(0, 8)}...</span>
-                                <span className="queue-item-amount">
-                                    {formatCurrency(item.transaction?.amount || '0')}
-                                </span>
-                            </div>
-                            <div className="queue-item-meta">
-                                <span className="countdown">{getCountdown(item.unlockAt)}</span>
+                <div className="admin-grid">
+                    {/* Queues Section */}
+                    <div className="queue-section">
+                        {/* Time-Lock Heap */}
+                        <div className="queue-card">
+                            <h3>
+                                ⏱️ Time-Lock Heap
+                                <span className="queue-count">{lockedItems.length}</span>
+                            </h3>
+                            <div className="queue-items">
+                                {lockedItems.length === 0 ? (
+                                    <div className="empty-state">No locked transactions</div>
+                                ) : (
+                                    lockedItems.map((item) => (
+                                        <div key={item.id} className="queue-item locked">
+                                            <div className="queue-item-info">
+                                                <span className="queue-item-id">{item.id.slice(0, 8)}...</span>
+                                                <span className="queue-item-amount">
+                                                    {formatCurrency(item.transaction?.amount || '0')}
+                                                </span>
+                                            </div>
+                                            <div className="queue-item-meta">
+                                                <span className="countdown">{getCountdown(item.unlockAt)}</span>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
-                    ))
-                )}
-            </div>
-        </div>
-    </div>
+                    </div>
 
-    {/* Pending Completion - Table View */}
-    <div className="queue-card">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-md)' }}>
-            <h3 style={{ margin: 0 }}>
-                ⏳ Pending Completion
-                <span className="queue-count">{pending.length}</span>
-            </h3>
-            <button
-                onClick={handleProcessNext}
-                className="btn btn-success"
-                disabled={pending.length === 0}
-                style={{ whiteSpace: 'nowrap' }}
-            >
-                ▶ Process Next
-            </button>
-        </div>
-        <div className="table-container">
-            {pending.length === 0 ? (
-                <div className="empty-state">No pending transactions</div>
-            ) : (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Sender → Recv</th>
-                            <th>Amount</th>
-                            <th>Eff. Priority</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pending.map((tx, index) => (
-                            <tr key={tx.id}>
-                                <td>{index + 1}</td>
-                                <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
-                                    {tx.id.slice(0, 8)}
-                                </td>
-                                <td>
-                                    {tx.fromAccount.accountNumber} → {tx.toAccount.accountNumber}
-                                </td>
-                                <td>{formatCurrency(tx.amount)}</td>
-                                <td style={{ color: 'var(--color-accent-primary)', fontWeight: 600 }}>
-                                    {tx.effectivePriority != null ? tx.effectivePriority.toFixed(1) : tx.basePriority.toFixed(1)}
-                                </td>
-                                <td>
-                                    <span className={`badge badge-${tx.status === 'RESERVED' ? 'warning' : 'info'}`}>
-                                        {tx.status === 'PENDING_MANUAL' ? 'Waiting' : tx.status}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
-    </div>
-</div>
+                    {/* Pending Completion - Table View */}
+                    <div className="queue-card">
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-md)' }}>
+                            <h3 style={{ margin: 0 }}>
+                                ⏳ Pending Completion
+                                <span className="queue-count">{pending.length}</span>
+                            </h3>
+                            <button
+                                onClick={handleProcessNext}
+                                className="btn btn-success"
+                                disabled={pending.length === 0}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
+                                ▶ Process Next
+                            </button>
+                        </div>
+                        <div className="table-container">
+                            {pending.length === 0 ? (
+                                <div className="empty-state">No pending transactions</div>
+                            ) : (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>ID</th>
+                                            <th>Sender → Recv</th>
+                                            <th>Amount</th>
+                                            <th>Eff. Priority</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {pending.map((tx, index) => (
+                                            <tr key={tx.id}>
+                                                <td>{index + 1}</td>
+                                                <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+                                                    {tx.id.slice(0, 8)}
+                                                </td>
+                                                <td>
+                                                    {tx.fromAccount.accountNumber} → {tx.toAccount.accountNumber}
+                                                </td>
+                                                <td>{formatCurrency(tx.amount)}</td>
+                                                <td style={{ color: 'var(--color-accent-primary)', fontWeight: 600 }}>
+                                                    {tx.effectivePriority != null ? tx.effectivePriority.toFixed(1) : tx.basePriority.toFixed(1)}
+                                                </td>
+                                                <td>
+                                                    <span className={`badge badge-${tx.status === 'RESERVED' ? 'warning' : 'info'}`}>
+                                                        {tx.status === 'PENDING_MANUAL' ? 'Waiting' : tx.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-{/* Accounts Table */ }
-<div className="card mt-lg">
-    <h3 className="mb-md">All Customer Accounts ({accounts.length})</h3>
-    <div className="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Account Number</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Mobile</th>
-                    <th>Tier</th>
-                    <th>Balance</th>
-                    <th>Created</th>
-                </tr>
-            </thead>
-            <tbody>
-                {accounts.map((acc) => (
-                    <tr key={acc.id}>
-                        <td style={{ fontFamily: 'var(--font-mono)' }}>{acc.accountNumber}</td>
-                        <td>{acc.fullName}</td>
-                        <td>{acc.email}</td>
-                        <td>{acc.mobile}</td>
-                        <td>
-                            <span className={`badge badge-${acc.tier === 'VIP' ? 'primary' : acc.tier === 'PREMIUM' ? 'warning' : 'info'}`}>
-                                {acc.tier}
-                            </span>
-                        </td>
-                        <td>{formatCurrency(acc.balance)}</td>
-                        <td>{new Date(acc.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>
-</div>
+                {/* Accounts Table */}
+                <div className="card mt-lg">
+                    <h3 className="mb-md">All Customer Accounts ({accounts.length})</h3>
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account Number</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Tier</th>
+                                    <th>Balance</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {accounts.map((acc) => (
+                                    <tr key={acc.id}>
+                                        <td style={{ fontFamily: 'var(--font-mono)' }}>{acc.accountNumber}</td>
+                                        <td>{acc.fullName}</td>
+                                        <td>{acc.email}</td>
+                                        <td>{acc.mobile}</td>
+                                        <td>
+                                            <span className={`badge badge-${acc.tier === 'VIP' ? 'primary' : acc.tier === 'PREMIUM' ? 'warning' : 'info'}`}>
+                                                {acc.tier}
+                                            </span>
+                                        </td>
+                                        <td>{formatCurrency(acc.balance)}</td>
+                                        <td>{new Date(acc.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </main >
         </div >
     );

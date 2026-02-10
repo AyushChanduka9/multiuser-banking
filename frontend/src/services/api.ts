@@ -50,8 +50,8 @@ export const authApi = {
 
 // OTP APIs
 export const otpApi = {
-    send: (mobile: string, email: string) =>
-        api.post('/otp/send', { mobile, email }),
+    send: (mobile: string) =>
+        api.post('/otp/send', { mobile }),
 
     verify: (identifier: string, code: string, type: 'SMS' | 'EMAIL') =>
         api.post('/otp/verify', { identifier, code, type }),
