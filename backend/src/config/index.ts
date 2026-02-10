@@ -24,15 +24,15 @@ export const config = {
 
     // Twilio (SMS)
     twilio: {
-        accountSid: (process.env.TWILIO_ACCOUNT_SID || '').trim(),
-        authToken: (process.env.TWILIO_AUTH_TOKEN || '').trim(),
-        phoneNumber: (process.env.TWILIO_PHONE_NUMBER || '').trim(),
+        accountSid: process.env.TWILIO_ACCOUNT_SID || '',
+        authToken: process.env.TWILIO_AUTH_TOKEN || '',
+        phoneNumber: process.env.TWILIO_PHONE_NUMBER || '',
     },
 
     // Gmail SMTP (Nodemailer)
     gmail: {
-        user: (process.env.GMAIL_USER || '').trim(),
-        appPassword: (process.env.GMAIL_APP_PASSWORD || '').trim(),
+        user: process.env.GMAIL_USER || '',
+        appPassword: process.env.GMAIL_APP_PASSWORD || '',
     },
 
     // Time-Lock
@@ -73,14 +73,5 @@ export function validateConfig(): void {
 
     if (missing.length > 0 && config.nodeEnv === 'production') {
         throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
-    }
-
-    // Debug logging for Twilio credentials
-    if (config.twilio.accountSid) {
-        const sid = config.twilio.accountSid;
-        const maskedSid = sid.substring(0, 4) + '...' + sid.slice(-4);
-        console.log(`ℹ️ Twilio Config: SID=${maskedSid} (Len=${sid.length}), Token=${config.twilio.authToken ? 'Set' : 'Missing'}, Phone=${config.twilio.phoneNumber}`);
-    } else {
-        console.warn('⚠️ Twilio Account SID is missing in config');
     }
 }
